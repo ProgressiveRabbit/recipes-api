@@ -50,10 +50,66 @@ func ListRecipeHandler(ctx *gin.Context)  {
 	ctx.JSON(http.StatusOK,recipes)
 }
 
+
+func UpdateRecipeHandler(ctx *gin.Context)  {
+	id := ctx.Param("id")
+	var recipe Recipe
+	if err := ctx.ShouldBindJSON(&recipe);err!=nil {
+		ctx.JSON(http.StatusOK,gin.H{
+			"error":err.Error(),
+		})
+		return
+	}
+
+
+	index := -1 //the position to recipes
+	for i := 0;i < len(recipes);i++ {
+		if recipes[i].ID == id {
+			index = i
+		}
+	}
+
+	if index == -1 {
+		ctx.JSON(http.StatusNotFound,gin.H{
+			"error" : "recipe not found",
+		})
+		return
+	}
+
+	recipes[index] = recipe
+	ctx.JSON(http.StatusOK,recipe)
+}
+
+func DeleteRecipeHandler(ctx *gin.Context)  {
+	id := ctx.Param("id")
+	index := -1 //indicate whether the recipe is found or not
+
+	for i := 0;i < len(recipes);i++ {
+		if recipes[i].ID == id {
+			index = i
+		}
+	}
+
+	if index == -1 {
+		ctx.JSON(http.StatusNotFound,gin.H{
+			"error":"The recipe not found.",
+		})
+		return
+	}
+
+	recipes = append(recipes[:index],recipes[index+1:]...) //remove recipe
+	ctx.JSON(http.StatusOK,gin.H{
+		"message":"The recipe has been delete.",
+	})
+}
+
+
 func main()  {
 	router := gin.Default()
 	router.POST("/recipes",NewRecipeHandler)
 	router.GET("/recipes",ListRecipeHandler)
+	router.PUT("/recipes/:id",UpdateRecipeHandler)
+	router.DELETE("/recipes/:id",DeleteRecipeHandler)
 	router.Run()
 }
 
