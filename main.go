@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/xid"
+	"strings"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -81,6 +81,7 @@ func UpdateRecipeHandler(ctx *gin.Context)  {
 }
 
 
+
 func DeleteRecipeHandler(ctx *gin.Context)  {
 	id := ctx.Param("id")
 	index := -1 //indicate whether the recipe is found or not
@@ -127,6 +128,7 @@ func SearchRecipesHandler(ctx *gin.Context)  {
 }
 
 
+
 func main()  {
 	router := gin.Default()
 	router.POST("/recipes",NewRecipeHandler)
@@ -134,6 +136,7 @@ func main()  {
 	router.PUT("/recipes/:id",UpdateRecipeHandler)
 	router.DELETE("/recipes/:id",DeleteRecipeHandler)
 	router.GET("/recipes/serach",SearchRecipesHandler)
+
 	router.Run()
 }
 
