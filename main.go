@@ -51,6 +51,7 @@ func ListRecipeHandler(ctx *gin.Context)  {
 	ctx.JSON(http.StatusOK,recipes)
 }
 
+
 func UpdateRecipeHandler(ctx *gin.Context)  {
 	id := ctx.Param("id")
 	var recipe Recipe
@@ -81,7 +82,6 @@ func UpdateRecipeHandler(ctx *gin.Context)  {
 }
 
 
-
 func DeleteRecipeHandler(ctx *gin.Context)  {
 	id := ctx.Param("id")
 	index := -1 //indicate whether the recipe is found or not
@@ -101,7 +101,7 @@ func DeleteRecipeHandler(ctx *gin.Context)  {
 
 	recipes = append(recipes[:index],recipes[index+1:]...) //remove recipe
 	ctx.JSON(http.StatusOK,gin.H{
-		"message":"The recipe has been deleted.",
+     "message":"The recipe has been deleted.",
 	})
 }
 
@@ -129,6 +129,7 @@ func SearchRecipesHandler(ctx *gin.Context)  {
 
 
 
+
 func main()  {
 	router := gin.Default()
 	router.POST("/recipes",NewRecipeHandler)
@@ -136,6 +137,7 @@ func main()  {
 	router.PUT("/recipes/:id",UpdateRecipeHandler)
 	router.DELETE("/recipes/:id",DeleteRecipeHandler)
 	router.GET("/recipes/serach",SearchRecipesHandler)
+
 
 	router.Run()
 }
