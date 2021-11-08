@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/xid"
+	"strings"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -80,6 +81,7 @@ func UpdateRecipeHandler(ctx *gin.Context)  {
 	ctx.JSON(http.StatusOK,recipe)
 }
 
+
 func DeleteRecipeHandler(ctx *gin.Context)  {
 	id := ctx.Param("id")
 	index := -1 //indicate whether the recipe is found or not
@@ -99,9 +101,33 @@ func DeleteRecipeHandler(ctx *gin.Context)  {
 
 	recipes = append(recipes[:index],recipes[index+1:]...) //remove recipe
 	ctx.JSON(http.StatusOK,gin.H{
-		"message":"The recipe has been delete.",
+     "message":"The recipe has been deleted.",
 	})
 }
+
+
+func SearchRecipesHandler(ctx *gin.Context)  {
+	tag := ctx.Query("tags")
+	listOfRecipes := make([]Recipe,0)
+
+	for i := 0;i < len(recipes);i++ {
+		found := false
+		for _,t := range recipes[i].Tag {
+			if strings.EqualFold(t,tag) {
+				found = true
+			}
+		}
+
+		if found {
+			listOfRecipes = append(listOfRecipes,recipes[i])
+		}
+	}
+
+	ctx.JSON(http.StatusOK,listOfRecipes)
+
+}
+
+
 
 
 func main()  {
@@ -110,6 +136,9 @@ func main()  {
 	router.GET("/recipes",ListRecipeHandler)
 	router.PUT("/recipes/:id",UpdateRecipeHandler)
 	router.DELETE("/recipes/:id",DeleteRecipeHandler)
+	router.GET("/recipes/serach",SearchRecipesHandler)
+
+
 	router.Run()
 }
 
